@@ -1,4 +1,4 @@
-// Pengendali Antarmuka Web App KIKI: Asisten AI Wirausaha Muda
+// Pengendali Antarmuka KIKI — Gaya Apple × Duolingo (Mode Hitam & Putih)
 // SMKN 2 Makassar — Aan Kurniawan, S.Pd., M.Ars
 
 (function () {
@@ -6,24 +6,47 @@
   const kb = window.KIKI_KNOWLEDGE;
   const tools = window.KIKI_TOOLS;
 
-  // Elemen DOM utama
-  const sidebar = document.getElementById("sidebar");
-  const sidebarOverlay = document.getElementById("sidebarOverlay");
-  const openSidebarBtn = document.getElementById("openSidebarBtn");
-  const closeSidebarBtn = document.getElementById("closeSidebarBtn");
-  const menuListEl = document.getElementById("menuList");
+  const htmlEl = document.documentElement;
+  const drawer = document.getElementById("drawer");
+  const drawerOverlay = document.getElementById("drawerOverlay");
+  const openDrawerBtn = document.getElementById("openDrawerBtn");
+  const closeDrawerBtn = document.getElementById("closeDrawerBtn");
+  const brandHomeBtn = document.getElementById("brandHomeBtn");
+  const welcomeHero = document.getElementById("welcomeHero");
+  const menuCardGrid = document.getElementById("menuCardGrid");
   const chatMessagesEl = document.getElementById("chatMessages");
   const quickChipsEl = document.getElementById("quickChips");
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
   const aiModeBadge = document.getElementById("aiModeBadge");
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const drawerThemeBtn = document.getElementById("drawerThemeBtn");
 
-  // Profil Sesi
+  // === TEMA HITAM (DARK) & PUTIH (LIGHT) ===
+  function applyTheme(theme) {
+    const t = theme === "dark" ? "dark" : "light";
+    htmlEl.setAttribute("data-theme", t);
+    localStorage.setItem("kiki_theme", t);
+    themeToggleBtn.textContent = t === "dark" ? "☀️" : "🌙";
+    themeToggleBtn.title = t === "dark" ? "Ganti ke Mode Putih" : "Ganti ke Mode Hitam";
+    if (drawerThemeBtn) {
+      drawerThemeBtn.textContent = t === "dark" ? "☀️ Ganti ke Mode Putih" : "🌙 Ganti ke Mode Hitam";
+    }
+  }
+  applyTheme(localStorage.getItem("kiki_theme") || "light");
+
+  function toggleTheme() {
+    const cur = htmlEl.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  }
+  themeToggleBtn.addEventListener("click", toggleTheme);
+  if (drawerThemeBtn) drawerThemeBtn.addEventListener("click", toggleTheme);
+
+  // === PROFIL SESI (Kelas X, XI, XII, Guru) ===
   const studentNameInput = document.getElementById("studentNameInput");
   const studentClassInput = document.getElementById("studentClassInput");
   const studentMajorInput = document.getElementById("studentMajorInput");
 
-  // Populate daftar jurusan SMKN 2 Makassar / SMK
   kb.majors.forEach(m => {
     const opt = document.createElement("option");
     opt.value = m;
@@ -38,66 +61,61 @@
   studentClassInput.addEventListener("change", syncProfile);
   studentMajorInput.addEventListener("change", syncProfile);
 
-  // Render 6 Menu Utama di Sidebar (ringkas agar rapi di HP & Desktop)
-  kb.menus.forEach(menu => {
+  // === 6 KARTU MENU GAYA DUOLINGO (RINGKAS TANPA PADAT TEKS) ===
+  const shortCards = [
+    { icon: "🧭", title: "Peta Bakat & Peluang", tag: "Kelas X–XI", cmd: "1. Peta Bakat & Peluang" },
+    { icon: "🛠️", title: "Lab Prototipe", tag: "Design Thinking", cmd: "2. Lab Inovasi & Prototipe" },
+    { icon: "📊", title: "Proposal & BEP", tag: "BMC & Risiko", cmd: "3. Proposal, Risiko & BEP" },
+    { icon: "🌿", title: "Pemasaran & Hijau", tag: "4P, HPP, 3R", cmd: "4. Pemasaran, Keuangan & Hijau" },
+    { icon: "🧮", title: "UMKM & Hitung", tag: "Kasus Sulsel", cmd: "5. Kalkulator & Contoh UMKM" },
+    { icon: "🎯", title: "Kuis & Refleksi", tag: "109 Soal RPP", cmd: "6. Kuis RPP & Refleksi" }
+  ];
+
+  shortCards.forEach(card => {
     const btn = document.createElement("button");
-    btn.className = "menu-item";
-    btn.dataset.menuId = menu.id;
+    btn.type = "button";
+    btn.className = "duo-card";
     btn.innerHTML = `
-      <span class="m-icon">${menu.icon}</span>
-      <span>
-        <span class="m-title">${menu.shortTitle}</span>
-        <span class="m-desc">${menu.kelas} • ${menu.topics.slice(0, 2).join(", ")}</span>
-      </span>
+      <span class="dc-icon">${card.icon}</span>
+      <span class="dc-title">${card.title}</span>
+      <span class="dc-tag">${card.tag}</span>
     `;
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
-      btn.classList.add("active");
-      closeSidebar();
-      sendUserMessage(menu.shortTitle);
-    });
-    menuListEl.appendChild(btn);
+    btn.addEventListener("click", () => sendUserMessage(card.cmd));
+    menuCardGrid.appendChild(btn);
   });
 
-  // Tombol tutup banner pengingat agar ruang baca HP lebih lega
-  const closeBannerBtn = document.getElementById("closeBannerBtn");
-  const infoBanner = document.getElementById("infoBanner");
-  if (closeBannerBtn && infoBanner) {
-    closeBannerBtn.addEventListener("click", () => infoBanner.classList.add("hidden"));
-  }
-
-  // Render 13 Modul RPP pada Modal
+  // === 13 MODUL RPP DI MODAL ===
   const rppGrid = document.getElementById("rppGrid");
   kb.rppModules.forEach((mod, idx) => {
     const card = document.createElement("div");
     card.className = "rpp-card";
     card.innerHTML = `
-      <span class="rpp-badge">Kelas ${mod.kelas} • ${mod.jp}</span>
+      <span class="rpp-badge">Kelas ${mod.kelas}</span>
       <h4>${idx + 1}. ${mod.title}</h4>
       <p>${mod.tp}</p>
     `;
     card.addEventListener("click", () => {
       closeModal("rppModal");
-      closeSidebar();
+      closeDrawer();
       sendUserMessage(`Jelaskan materi dan langkah ${mod.title}`);
     });
     rppGrid.appendChild(card);
   });
 
-  // Sidebar Mobile Toggle
-  function openSidebar() {
-    sidebar.classList.add("open");
-    sidebarOverlay.classList.add("open");
+  // === DRAWER CONTROLS ===
+  function openDrawer() {
+    drawer.classList.add("open");
+    drawerOverlay.classList.add("open");
   }
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    sidebarOverlay.classList.remove("open");
+  function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerOverlay.classList.remove("open");
   }
-  openSidebarBtn.addEventListener("click", openSidebar);
-  closeSidebarBtn.addEventListener("click", closeSidebar);
-  sidebarOverlay.addEventListener("click", closeSidebar);
+  openDrawerBtn.addEventListener("click", openDrawer);
+  closeDrawerBtn.addEventListener("click", closeDrawer);
+  drawerOverlay.addEventListener("click", closeDrawer);
 
-  // Modal Helper
+  // === MODAL CONTROLS ===
   function openModal(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -118,7 +136,7 @@
 
   document.querySelectorAll("[data-modal]").forEach(btn => {
     btn.addEventListener("click", () => {
-      closeSidebar();
+      closeDrawer();
       openModal(btn.dataset.modal);
     });
   });
@@ -132,20 +150,28 @@
   });
 
   document.getElementById("btnSummary").addEventListener("click", () => openModal("summaryModal"));
-  document.getElementById("btnSettings").addEventListener("click", () => openModal("settingsModal"));
-  document.getElementById("btnReset").addEventListener("click", () => {
+  document.getElementById("btnSettings").addEventListener("click", () => {
+    closeDrawer();
+    openModal("settingsModal");
+  });
+
+  function resetToHome() {
     chatMessagesEl.innerHTML = "";
+    quickChipsEl.innerHTML = "";
+    welcomeHero.classList.remove("hidden");
     agent.state.quizSession = null;
     agent.state.reflectionMode = false;
     agent.state.activeMenu = null;
     agent.state.notes = [];
-    renderBotReply(agent.getGreeting());
-  });
+  }
 
-  // Update Badge Mode AI (ringkas agar rapi di layar HP)
+  document.getElementById("btnReset").addEventListener("click", resetToHome);
+  brandHomeBtn.addEventListener("click", resetToHome);
+
+  // === MODE AI BADGE ===
   function updateModeBadge() {
     if (agent.state.useGemini && agent.state.apiKey) {
-      aiModeBadge.textContent = "Gemini AI";
+      aiModeBadge.textContent = "Gemini";
       aiModeBadge.classList.add("gemini");
     } else {
       aiModeBadge.textContent = "13 RPP";
@@ -160,28 +186,23 @@
     agent.saveApiConfig(key, enabled);
     updateModeBadge();
     document.getElementById("settingsStatus").textContent = enabled && key
-      ? "✅ Mode Gemini AI aktif (tersimpan aman di browser ini)."
-      : "✅ Mode Mandiri (100% Lokal Berbasis 13 RPP) aktif.";
+      ? "✅ Mode Gemini AI aktif."
+      : "✅ Mode Mandiri (13 RPP) aktif.";
   });
 
-  // Markdown Renderer Aman (tanpa raw HTML berbahaya)
+  // === MARKDOWN RENDERER AMAN ===
   function renderMarkdownSafe(md) {
     let html = md
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/>/g, "&gt;")
+      .replace(/^---$/gm, "<hr>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>");
 
-    // Horizontal rule
-    html = html.replace(/^---$/gm, "<hr>");
-    // Code inline
-    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-    // Bold & Italic
-    html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-
-    // Paragraf & list sederhana
     const lines = html.split("\n");
-    let out = [];
+    const out = [];
     let inUl = false;
     let inOl = false;
 
@@ -198,11 +219,8 @@
       } else {
         if (inUl) { out.push("</ul>"); inUl = false; }
         if (inOl) { out.push("</ol>"); inOl = false; }
-        if (trimmed === "<hr>") {
-          out.push("<hr>");
-        } else if (trimmed.length > 0) {
-          out.push(`<p>${trimmed}</p>`);
-        }
+        if (trimmed === "<hr>") out.push("<hr>");
+        else if (trimmed.length > 0) out.push(`<p>${trimmed}</p>`);
       }
     }
     if (inUl) out.push("</ul>");
@@ -211,6 +229,7 @@
   }
 
   function appendMessage(role, text) {
+    welcomeHero.classList.add("hidden");
     const row = document.createElement("div");
     row.className = `msg-row ${role}`;
     const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
@@ -220,11 +239,12 @@
       <div class="msg-avatar" aria-hidden="true">${avatarLabel}</div>
       <div>
         <div class="msg-bubble">${role === "bot" ? renderMarkdownSafe(text) : `<p>${text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`}</div>
-        <div class="msg-time">${role === "bot" ? "KIKI" : (agent.state.studentName || "Murid")} • ${timeStr}</div>
+        <div class="msg-time">${role === "bot" ? "KIKI" : (agent.state.studentName || "Kamu")} • ${timeStr}</div>
       </div>
     `;
     chatMessagesEl.appendChild(row);
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    const stage = document.querySelector(".main-stage");
+    stage.scrollTop = stage.scrollHeight;
   }
 
   function renderChips(chips) {
@@ -234,7 +254,13 @@
       btn.type = "button";
       btn.className = "chip-btn";
       btn.textContent = label;
-      btn.addEventListener("click", () => sendUserMessage(label));
+      btn.addEventListener("click", () => {
+        if (label.toLowerCase() === "kembali ke menu" || label.toLowerCase() === "menu") {
+          resetToHome();
+        } else {
+          sendUserMessage(label);
+        }
+      });
       quickChipsEl.appendChild(btn);
     });
   }
@@ -251,10 +277,13 @@
   async function sendUserMessage(rawText) {
     const text = (rawText || "").trim();
     if (!text) return;
+    if (/^(beranda|home)$/i.test(text)) {
+      resetToHome();
+      return;
+    }
     syncProfile();
     appendMessage("user", text);
     chatInput.value = "";
-
     const reply = await agent.processMessage(text);
     renderBotReply(reply);
   }
@@ -272,20 +301,14 @@
     const res = tools.calculateBEP(fc, p, vc);
     const out = document.getElementById("bepOutput");
     out.className = "calc-result show" + (res.ok ? "" : " error");
-
-    if (!res.ok) {
-      out.innerHTML = `⚠️ ${res.error}`;
-      return;
-    }
+    if (!res.ok) { out.innerHTML = `⚠️ ${res.error}`; return; }
 
     out.innerHTML = `
-      <div>Margin Kontribusi per Unit: <strong>${tools.formatRp(res.contributionMargin)}</strong> (${res.marginRatio}%)</div>
-      <div>Hasil Eksak: <code>${res.fixedCost.toLocaleString("id-ID")} ÷ ${res.contributionMargin.toLocaleString("id-ID")} = ${res.exactUnits}</code></div>
-      <div class="calc-highlight">✅ BEP Unit: ${res.unitsCeil} unit/porsi (dibulatkan ke atas)</div>
-      <div>✅ BEP Rupiah (Omzet Impas): <strong>${tools.formatRp(res.bepRupiah)}</strong></div>
-      <button id="sendBepToChat" class="btn-accent">Kirim Hasil ke Chat KIKI ➤</button>
+      <div>Margin Kontribusi: <strong>${tools.formatRp(res.contributionMargin)}</strong> (${res.marginRatio}%)</div>
+      <div class="calc-highlight">✅ BEP: ${res.unitsCeil} unit/porsi</div>
+      <div>Omzet Impas: <strong>${tools.formatRp(res.bepRupiah)}</strong></div>
+      <button id="sendBepToChat" class="btn-accent">Kirim ke Chat KIKI ➤</button>
     `;
-
     document.getElementById("sendBepToChat").addEventListener("click", () => {
       closeModal("bepModal");
       sendUserMessage(`Hitung BEP biaya tetap ${res.fixedCost} harga jual ${res.pricePerUnit} biaya variabel ${res.variableCost}`);
@@ -300,20 +323,14 @@
     const res = tools.calculateHPP(cost, units, margin);
     const out = document.getElementById("hppOutput");
     out.className = "calc-result show" + (res.ok ? "" : " error");
-
-    if (!res.ok) {
-      out.innerHTML = `⚠️ ${res.error}`;
-      return;
-    }
+    if (!res.ok) { out.innerHTML = `⚠️ ${res.error}`; return; }
 
     out.innerHTML = `
-      <div>HPP per Unit: <strong>${tools.formatRp(res.hppPerUnit)}</strong></div>
-      <div>Laba per Unit (${res.marginPercent}%): <strong>${tools.formatRp(res.profitPerUnit)}</strong></div>
-      <div class="calc-highlight">✅ Rekomendasi Harga Jual: ${tools.formatRp(res.sellingPrice)} / unit</div>
-      <div>Estimasi Total Laba (${res.totalUnits} unit): <strong>${tools.formatRp(res.totalProfit)}</strong></div>
-      <button id="sendHppToChat" class="btn-accent">Kirim Hasil ke Chat KIKI ➤</button>
+      <div>HPP / Unit: <strong>${tools.formatRp(res.hppPerUnit)}</strong></div>
+      <div class="calc-highlight">✅ Harga Jual: ${tools.formatRp(res.sellingPrice)} / unit</div>
+      <div>Estimasi Laba: <strong>${tools.formatRp(res.totalProfit)}</strong></div>
+      <button id="sendHppToChat" class="btn-accent">Kirim ke Chat KIKI ➤</button>
     `;
-
     document.getElementById("sendHppToChat").addEventListener("click", () => {
       closeModal("hppModal");
       sendUserMessage(`Hitung HPP total biaya ${res.totalCost} jumlah ${res.totalUnits} margin ${res.marginPercent}%`);
@@ -322,40 +339,32 @@
 
   // === SIMULATOR SAW ===
   document.getElementById("calcSawBtn").addEventListener("click", () => {
-    const names = Array.from(document.querySelectorAll(".saw-name")).map(i => i.value.trim() || "Alternatif");
+    const names = Array.from(document.querySelectorAll(".saw-name")).map(i => i.value.trim() || "Ide");
     const criteria = [
-      { name: "Permintaan Pasar", weight: 40, type: "benefit" },
-      { name: "Sumber Daya & Skill", weight: 35, type: "benefit" },
+      { name: "Permintaan", weight: 40, type: "benefit" },
+      { name: "Sumber Daya", weight: 35, type: "benefit" },
       { name: "Biaya/Risiko", weight: 25, type: "cost" }
     ];
-    const alternatives = names.map((name, r) => {
-      const scores = [0, 1, 2].map(c => Number(document.querySelector(`.saw-val[data-row="${r}"][data-col="${c}"]`).value || 1));
-      return { name, scores };
-    });
-
+    const alternatives = names.map((name, r) => ({
+      name,
+      scores: [0, 1, 2].map(c => Number(document.querySelector(`.saw-val[data-row="${r}"][data-col="${c}"]`).value || 1))
+    }));
     const res = tools.calculateSAW(criteria, alternatives);
     const out = document.getElementById("sawOutput");
     out.className = "calc-result show" + (res.ok ? "" : " error");
-    if (!res.ok) {
-      out.innerHTML = `⚠️ ${res.error}`;
-      return;
-    }
+    if (!res.ok) { out.innerHTML = `⚠️ ${res.error}`; return; }
 
-    const rowsHtml = res.ranked.map((item, idx) =>
-      `<div><strong>#${idx + 1} ${item.name}</strong> — Skor SAW: <strong>${item.score}</strong> / 100</div>`
-    ).join("");
-
+    const rowsHtml = res.ranked.map((item, idx) => `<div><strong>#${idx + 1} ${item.name}</strong> — ${item.score}/100</div>`).join("");
     out.innerHTML = `
-      <div class="calc-highlight">🏆 Rekomendasi Terbaik: ${res.best.name} (${res.best.score}/100)</div>
+      <div class="calc-highlight">🏆 Terbaik: ${res.best.name} (${res.best.score}/100)</div>
       ${rowsHtml}
-      <button id="sendSawToChat" class="btn-accent">Simpan ke Rangkuman Sesi ➤</button>
+      <button id="sendSawToChat" class="btn-accent">Simpan ke Rangkuman ➤</button>
     `;
-
     document.getElementById("sendSawToChat").addEventListener("click", () => {
-      agent.recordNote("Keputusan SAW", `Peringkat #1: ${res.best.name} (Skor ${res.best.score}/100) dibanding ${res.ranked.length} alternatif.`);
+      agent.recordNote("Keputusan SAW", `Terbaik #1: ${res.best.name} (${res.best.score}/100).`);
       closeModal("sawModal");
-      appendMessage("bot", `⚖️ **Hasil Simulator SAW Tersimpan!**\n\nAlternatif terbaik berdasarkan pembobotan kriteria adalah **${res.best.name}** (Skor **${res.best.score}/100**).\n\nBagaimana perbandingan hasil perhitungan SAW ini dibanding keputusan manual/insting kelompokmu sebelumnya?`);
-      renderChips(["Buka Rangkuman Siap Salin", "2. Lab Inovasi & Prototipe", "Kembali ke Menu"]);
+      appendMessage("bot", `⚖️ **Hasil SAW Tersimpan!**\n\nRekomendasi terbaik: **${res.best.name}** (**${res.best.score}/100**).\n\nApakah hasil ini sesuai dengan pengamatan kelompokmu?`);
+      renderChips(["Buka Rangkuman Siap Salin", "Kembali ke Menu"]);
     });
   });
 
@@ -364,8 +373,8 @@
     const txt = document.getElementById("summaryTextarea").value;
     try {
       await navigator.clipboard.writeText(txt);
-      document.getElementById("copySummaryBtn").textContent = "✅ Berhasil Disalin!";
-      setTimeout(() => { document.getElementById("copySummaryBtn").textContent = "📋 Salin Teks"; }, 1800);
+      document.getElementById("copySummaryBtn").textContent = "✅ Tersalin!";
+      setTimeout(() => { document.getElementById("copySummaryBtn").textContent = "📋 Salin Teks"; }, 1600);
     } catch {
       document.getElementById("summaryTextarea").select();
       document.execCommand("copy");
@@ -378,11 +387,8 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Rangkuman_KIKI_KIK_SMKN2Makassar.txt";
+    a.download = "Rangkuman_KIKI_SMKN2Makassar.txt";
     a.click();
     URL.revokeObjectURL(url);
   });
-
-  // Sapaan Awal KIKI saat halaman dibuka
-  renderBotReply(agent.getGreeting());
 })();

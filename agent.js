@@ -259,8 +259,8 @@ class KikiAgent {
     if (/^(1|1\.|menu 1|peta bakat)/i.test(lower) || lower.includes("peta bakat & peluang")) {
       this.state.activeMenu = 1;
       return {
-        text: `🧭 **Menu 1: Peta Bakat & Peluang (Kelas XI)**\n\nMenu ini memandumu pada 3 modul RPP:\n- **TP 1 — Talent Mapping:** Pemetaan tipe kepribadian (RIASEC/16Personalities), 3 kekuatan karakter, 2 minat utama, ≥2 ide usaha, & rencana 1 bulan.\n- **TP 2 — Analisis Peluang Usaha:** Kuesioner Google Form, analisis pesaing, perbandingan **3 alternatif ide usaha** (permintaan, sumber daya, risiko).\n- **TP 3 — Pengambilan Keputusan (SAW):** Pembobotan kriteria secara objektif berbasis spreadsheet.\n\nPilih topik yang mau kita kerjakan bertahap sekarang:`,
-        chips: ["Panduan Talent Mapping", "Panduan Riset Pasar", "Panduan Keputusan SAW", "Buka Simulator SAW", "Kuis Talent Mapping"]
+        text: `🧭 **Peta Bakat & Peluang**\n\n- **Talent Mapping:** Kenali minat-bakat (RIASEC) & kaitkan ke 2 ide usaha.\n- **Riset Pasar:** Buat survei Google Form & bandingkan 3 ide usaha.\n- **Metode SAW:** Pilih ide terbaik lewat pembobotan skor.\n\nMau mulai dari yang mana?`,
+        chips: ["Panduan Talent Mapping", "Panduan Riset Pasar", "Buka Simulator SAW", "Kuis Talent Mapping"]
       };
     }
 
@@ -268,7 +268,7 @@ class KikiAgent {
     if (/^(2|2\.|menu 2|lab inovasi|lab prototipe)/i.test(lower)) {
       this.state.activeMenu = 2;
       return {
-        text: `🛠️ **Menu 2: Lab Inovasi & Prototipe (Kelas XI)**\n\nMenu ini memandumu pada 3 modul RPP:\n- **Analisis Produk Inovatif:** Bedah inovasi produk, proses/layanan, model bisnis, & perbandingan *Value Proposition*.\n- **5 Tahap Design Thinking:** **Empathize → Define → Ideate → Prototype → Test** (+ Iterasi berdasarkan umpan balik ≥3 pengguna).\n- **Pembuatan Produk Inovatif:** Riset ≥10 responden, desain kemasan Canva, produksi prototipe (K3), hingga simulasi bazar.\n\nMau mulai dari tahapan yang mana?`,
+        text: `🛠️ **Lab Inovasi & Prototipe**\n\n- **Produk Inovatif:** Bedah inovasi produk, proses, & *Value Proposition*.\n- **Design Thinking:** 5 tahap (*Empathize → Define → Ideate → Prototype → Test*).\n- **Pembuatan Produk:** Desain kemasan, produksi aman (K3), & uji konsumen.\n\nPilih tahap yang mau kamu pelajari:`,
         chips: ["Mulai Design Thinking", "Analisis Produk Inovatif", "Panduan Pembuatan Produk", "Kuis Design Thinking"]
       };
     }
@@ -277,7 +277,7 @@ class KikiAgent {
     if (/^(3|3\.|menu 3|proposal.*risiko|mulai panduan bmc)/i.test(lower)) {
       this.state.activeMenu = 3;
       return {
-        text: `📊 **Menu 3: Proposal, Risiko & BEP (Kelas XI)**\n\nMenu ini mendampingi proyek 8 pertemuan RPP:\n1. **Business Model Canvas (BMC) 9 Elemen**\n2. **4 Jenis Risiko** (Pasar, Operasional, Keuangan, SDM) + **4 Strategi Mitigasi** (Menghindari, Mengurangi, Memindahkan, Menerima)\n3. **Perhitungan BEP (Titik Impas):** ketik langsung angkanya di chat atau pakai **Kalkulator BEP**\n4. **Sistematika Proposal Usaha** & **Simulasi Tanya Jawab Pitching**\n\nBagian mana yang mau kamu susun dulu?`,
+        text: `📊 **Proposal, Risiko & BEP**\n\n- **BMC:** Susun 9 elemen model bisnis.\n- **Risiko:** Petakan 4 risiko & strategi mitigasinya.\n- **BEP & Pitching:** Hitung titik impas + latihan tanya jawab juri.\n\nMau coba yang mana dulu?`,
         chips: ["Panduan BMC 9 Elemen", "Tabel Risiko & Mitigasi", "Contoh Hitung BEP", "Simulasi Pitching", "Buka Kalkulator BEP"]
       };
     }
@@ -286,7 +286,7 @@ class KikiAgent {
     if (/^(4|4\.|menu 4|pemasaran.*hijau)/i.test(lower)) {
       this.state.activeMenu = 4;
       return {
-        text: `🌿 **Menu 4: Pemasaran, Keuangan & Usaha Hijau (Kelas XII)**\n\nMenu ini mencakup 5 modul lengkap KIK Kelas XII:\n- **Komersialisasi & Pemasaran 4P:** Segmentasi pasar, 4P (*Product, Price, Place, Promotion*), konten promosi & CTA.\n- **Pengelolaan Keuangan:** Modal, Arus Kas (≥15 transaksi BukuWarung), HPP, Harga Jual, & Laba Rugi.\n- **Budaya Korporasi:** Visi-misi, *Core Values*, Kode Etik, & *Role-play*.\n- **Evaluasi PDCA / Kaizen:** Indikator finansial/non-finansial & perbaikan berkelanjutan.\n- **Green Business Plan:** Ekonomi Sirkular **3R**, **CSR**, & **Triple Bottom Line** (*Profit–People–Planet*).\n\nTopik Kelas XII mana yang ingin kamu pelajari dulu?`,
+        text: `🌿 **Pemasaran, Keuangan & Usaha Hijau**\n\n- **Pemasaran 4P:** Target pasar, konten promosi & CTA.\n- **Keuangan:** Arus kas, HPP, harga jual & laba rugi.\n- **Budaya, PDCA & 3R:** Kode etik kerja, Kaizen, & *Green Business*.\n\nPilih topik yang mau dibahas:`,
         chips: ["Strategi Pemasaran 4P", "Keuangan & Hitung HPP", "Budaya Korporasi", "Evaluasi PDCA/Kaizen", "Green Business 3R & CSR"]
       };
     }
@@ -296,9 +296,9 @@ class KikiAgent {
       this.state.activeMenu = 5;
       const major = this.state.studentMajor || "Teknik Komputer & Jaringan / RPL / DKV";
       const list = this.kb.umkmExamples[major] || this.kb.umkmExamples["Bisnis, Jasa & Umum"];
-      const exText = list.map((x, i) => `${i + 1}. **${x.name}**\n   - *Nilai Tambah:* ${x.value}\n   - *Catatan Bisnis:* ${x.bmc}`).join("\n");
+      const exText = list.map((x, i) => `${i + 1}. **${x.name}** — ${x.value}`).join("\n");
       return {
-        text: `🧮 **Menu 5: Kalkulator & Contoh UMKM Sulawesi Selatan**\n\nBerikut contoh inspirasi usaha lokal (**${major}**):\n${exText}\n\nKamu juga bisa langsung memakai 3 alat interaktif di bawah ini (**Kalkulator BEP, HPP & Margin, atau Simulator Keputusan SAW**), atau ketik nama jurusan lain (mis. *Kuliner, Otomotif, DPIB, Mesin, Listrik, Busana*)!`,
+        text: `🧮 **Contoh UMKM Sulsel (${major})**\n\n${exText}\n\nPilih jurusan lain atau langsung coba alat hitung di bawah:`,
         chips: ["Buka Kalkulator BEP", "Buka Kalkulator HPP", "Buka Simulator SAW", "Contoh UMKM Kuliner", "Contoh UMKM Otomotif", "Contoh UMKM DPIB"]
       };
     }
@@ -307,7 +307,7 @@ class KikiAgent {
     if (/^(6|6\.|menu 6|kuis.*refleksi|kuis rpp)/i.test(lower)) {
       this.state.activeMenu = 6;
       return {
-        text: `🎯 **Menu 6: Kuis RPP & Refleksi (109 Soal Resmi)**\n\nUji pemahamanmu dengan bank soal pilihan ganda langsung dari **13 RPP KIK SMKN 2 Makassar**! Target ketuntasan: **skor ≥ 75**.\n\n**Pilih topik kuis (10 soal + pembahasan otomatis):**\n- Kuis 1: Talent Mapping\n- Kuis 2: Analisis Peluang Usaha\n- Kuis 3: Analisis Produk Inovatif\n- Kuis 4: Design Thinking\n- Kuis 5: Pembuatan Produk Inovatif\n- Kuis 6: Proposal, BMC, Risiko & BEP\n- Kuis 7: Pemasaran 4P\n- Kuis 8: Keuangan & HPP\n- Kuis 9: Budaya Korporasi\n- Kuis 10: Evaluasi PDCA/Kaizen\n- Kuis 11: Green Business (3R & CSR)\n\nKetik nama/nomor kuis di atas, atau pilih **Refleksi Traffic Light**!`,
+        text: `🎯 **Kuis RPP & Refleksi (109 Soal)**\n\nTarget tuntas: **skor ≥ 75** (10 soal + pembahasan instan).\nPilih topik kuis di bawah atau isi **Refleksi Traffic Light**:`,
         chips: ["Kuis Talent Mapping", "Kuis Peluang Usaha", "Kuis Design Thinking", "Kuis Proposal & BEP", "Kuis Keuangan & HPP", "Kuis Green Business", "Refleksi Traffic Light"]
       };
     }
