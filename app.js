@@ -38,7 +38,7 @@
   studentClassInput.addEventListener("change", syncProfile);
   studentMajorInput.addEventListener("change", syncProfile);
 
-  // Render 6 Menu Utama di Sidebar
+  // Render 6 Menu Utama di Sidebar (ringkas agar rapi di HP & Desktop)
   kb.menus.forEach(menu => {
     const btn = document.createElement("button");
     btn.className = "menu-item";
@@ -47,7 +47,7 @@
       <span class="m-icon">${menu.icon}</span>
       <span>
         <span class="m-title">${menu.shortTitle}</span>
-        <span class="m-desc">${menu.desc}</span>
+        <span class="m-desc">${menu.kelas} • ${menu.topics.slice(0, 2).join(", ")}</span>
       </span>
     `;
     btn.addEventListener("click", () => {
@@ -58,6 +58,13 @@
     });
     menuListEl.appendChild(btn);
   });
+
+  // Tombol tutup banner pengingat agar ruang baca HP lebih lega
+  const closeBannerBtn = document.getElementById("closeBannerBtn");
+  const infoBanner = document.getElementById("infoBanner");
+  if (closeBannerBtn && infoBanner) {
+    closeBannerBtn.addEventListener("click", () => infoBanner.classList.add("hidden"));
+  }
 
   // Render 13 Modul RPP pada Modal
   const rppGrid = document.getElementById("rppGrid");
@@ -135,13 +142,13 @@
     renderBotReply(agent.getGreeting());
   });
 
-  // Update Badge Mode AI
+  // Update Badge Mode AI (ringkas agar rapi di layar HP)
   function updateModeBadge() {
     if (agent.state.useGemini && agent.state.apiKey) {
-      aiModeBadge.textContent = "Mode Gemini AI + 13 RPP";
+      aiModeBadge.textContent = "Gemini AI";
       aiModeBadge.classList.add("gemini");
     } else {
-      aiModeBadge.textContent = "Mode Mandiri (13 RPP)";
+      aiModeBadge.textContent = "13 RPP";
       aiModeBadge.classList.remove("gemini");
     }
   }
