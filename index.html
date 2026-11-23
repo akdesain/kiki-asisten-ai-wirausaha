@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIKI: Asisten AI Wirausaha Muda — SMKN 2 Makassar</title>
+  <meta name="description" content="KIKI (Kreativitas, Inovasi, Kewirausahaan Interaktif) — Agen AI & Bot Pendamping Belajar Mapel KIK Fase F SMKN 2 Makassar. Karya Digital Guru Program 10.000 Karya Digital Guru 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Overlay Mobile Sidebar -->
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <!-- SIDEBAR NAVIGASI -->
+    <aside id="sidebar" class="sidebar" aria-label="Navigasi Utama KIKI">
+      <div class="brand-header">
+        <div class="brand-logo" aria-hidden="true">💡</div>
+        <div class="brand-info">
+          <h1>KIKI <span class="badge-ver">v1.0</span></h1>
+          <p>Asisten AI Wirausaha Muda</p>
+        </div>
+        <button id="closeSidebarBtn" class="icon-btn mobile-only" aria-label="Tutup menu">✕</button>
+      </div>
+
+      <div class="school-strip">
+        <span>🏫 SMKN 2 Makassar • Mapel KIK (Fase F)</span>
+      </div>
+
+      <!-- Profil Ringkas Sesi Murid -->
+      <section class="sidebar-card profile-card">
+        <div class="card-title">👤 Profil Sesi (Opsional)</div>
+        <div class="profile-grid">
+          <input id="studentNameInput" type="text" placeholder="Nama panggilan..." maxlength="30" />
+          <select id="studentClassInput" aria-label="Pilih Kelas">
+            <option value="XI">Kelas XI</option>
+            <option value="XII">Kelas XII</option>
+          </select>
+        </div>
+        <select id="studentMajorInput" aria-label="Pilih Jurusan">
+          <option value="">-- Pilih Kompetensi Keahlian --</option>
+        </select>
+        <p class="privacy-note">🔒 Disimpan hanya di browser ini, tanpa data pribadi sensitif.</p>
+      </section>
+
+      <!-- 6 Menu Utama KIKI -->
+      <nav class="menu-section">
+        <div class="section-label">MENU UTAMA KIKI (13 MODUL RPP)</div>
+        <div id="menuList" class="menu-list"></div>
+      </nav>
+
+      <!-- Alat Interaktif Cepat -->
+      <section class="tools-section">
+        <div class="section-label">ALAT INTERAKTIF CEPAT</div>
+        <div class="tool-buttons">
+          <button class="tool-btn" data-modal="bepModal">🧮 Kalkulator BEP</button>
+          <button class="tool-btn" data-modal="hppModal">💰 Kalkulator HPP</button>
+          <button class="tool-btn" data-modal="sawModal">⚖️ Simulator SAW</button>
+          <button class="tool-btn" data-modal="rppModal">📚 13 Modul RPP</button>
+        </div>
+      </section>
+
+      <footer class="sidebar-footer">
+        <div>Pengembang: <strong>Aan Kurniawan, S.Pd., M.Ars</strong></div>
+        <div>Dibangun dengan Google Antigravity • GitHub Pages</div>
+      </footer>
+    </aside>
+
+    <!-- AREA PERCAKAPAN UTAMA -->
+    <main class="chat-workspace">
+      <header class="chat-header">
+        <div class="header-left">
+          <button id="openSidebarBtn" class="icon-btn mobile-only" aria-label="Buka menu">☰</button>
+          <div class="agent-avatar-sm">💡</div>
+          <div>
+            <div class="agent-title-row">
+              <h2>KIKI: Asisten AI Wirausaha Muda</h2>
+              <span id="aiModeBadge" class="status-pill">Mode Mandiri (13 RPP)</span>
+            </div>
+            <p class="agent-subtitle">Kreativitas, Inovasi, Kewirausahaan Interaktif • Siap Memandu 24 Jam</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btnSummary" class="btn-outline" title="Lihat & Salin Rangkuman Sesi">📋 Rangkuman</button>
+          <button id="btnSettings" class="btn-outline" title="Pengaturan Mode AI">⚙️ Mode AI</button>
+          <button id="btnReset" class="btn-outline danger" title="Mulai Sesi Baru">🔄 Reset</button>
+        </div>
+      </header>
+
+      <!-- Banner Etika & Privasi -->
+      <div class="info-banner">
+        <span>🛡️ <strong>Prinsip KIKI:</strong> Memandu langkah demi langkah (tidak mengerjakan tugas penuh) • Jangan bagikan data pribadi (NIK/No. HP/Alamat) • Selalu verifikasi jawaban ke RPP & Guru.</span>
+      </div>
+
+      <!-- Daftar Gelembung Chat -->
+      <section id="chatMessages" class="chat-messages" aria-live="polite"></section>
+
+      <!-- Quick Reply Chips -->
+      <div id="quickChips" class="quick-chips" aria-label="Pilihan cepat"></div>
+
+      <!-- Form Input Chat -->
+      <form id="chatForm" class="chat-input-bar">
+        <input
+          id="chatInput"
+          type="text"
+          autocomplete="off"
+          placeholder="Ketik pesan, angka menu (1–6), atau rumus BEP (cth: biaya tetap 1500000 harga 15000 variabel 8000)..."
+          aria-label="Tulis pesan untuk KIKI"
+        />
+        <button type="submit" class="btn-send" aria-label="Kirim pesan">Kirim ➤</button>
+      </form>
+    </main>
+  </div>
+
+  <!-- MODAL 1: KALKULATOR BEP -->
+  <div id="bepModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="bepModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="bepModalTitle">🧮 Kalkulator BEP (Titik Impas)</h3>
+        <button class="modal-close" data-close="bepModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Rumus RPP KIK: <code>BEP (unit) = Biaya Tetap ÷ (Harga Jual − Biaya Variabel)</code>, dibulatkan ke atas agar usaha tidak rugi.</p>
+        <div class="form-group">
+          <label for="bepFC">Biaya Tetap per Bulan (Rp)</label>
+          <input id="bepFC" type="number" value="1500000" min="0" step="10000" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bepPrice">Harga Jual per Unit (Rp)</label>
+            <input id="bepPrice" type="number" value="15000" min="0" step="500" />
+          </div>
+          <div class="form-group">
+            <label for="bepVC">Biaya Variabel per Unit (Rp)</label>
+            <input id="bepVC" type="number" value="8000" min="0" step="500" />
+          </div>
+        </div>
+        <button id="calcBepBtn" class="btn-primary full-width">Hitung BEP Sekarang</button>
+        <div id="bepOutput" class="calc-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: KALKULATOR HPP & HARGA JUAL -->
+  <div id="hppModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="hppModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="hppModalTitle">💰 Kalkulator HPP & Harga Jual</h3>
+        <button class="modal-close" data-close="hppModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Hitung Harga Pokok Produksi (HPP) per unit dan tentukan Harga Jual berdasarkan margin keuntungan sesuai RPP Pengelolaan Keuangan.</p>
+        <div class="form-group">
+          <label for="hppCost">Total Biaya Produksi (Bahan + Tenaga + Kemasan) (Rp)</label>
+          <input id="hppCost" type="number" value="800000" min="0" step="10000" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="hppUnits">Jumlah Produk Dihasilkan (Unit)</label>
+            <input id="hppUnits" type="number" value="100" min="1" />
+          </div>
+          <div class="form-group">
+            <label for="hppMargin">Target Margin Keuntungan (%)</label>
+            <input id="hppMargin" type="number" value="25" min="0" max="500" />
+          </div>
+        </div>
+        <button id="calcHppBtn" class="btn-primary full-width">Hitung HPP & Harga Jual</button>
+        <div id="hppOutput" class="calc-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: SIMULATOR PEMBOBOTAN SAW -->
+  <div id="sawModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="sawModalTitle">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="sawModalTitle">⚖️ Simulator Pengambilan Keputusan (Metode SAW)</h3>
+        <button class="modal-close" data-close="sawModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Bandingkan 3 alternatif ide usaha (atau pemasok/perangkat) berdasarkan bobot kriteria secara objektif (RPP Pengambilan Keputusan Berbasis Teknologi).</p>
+        <div class="saw-table-wrap">
+          <table class="saw-table">
+            <thead>
+              <tr>
+                <th>Alternatif Pilihan</th>
+                <th>Permintaan Pasar<br><small>Bobot 40% (Benefit)</small></th>
+                <th>Sumber Daya & Skill<br><small>Bobot 35% (Benefit)</small></th>
+                <th>Tingkat Biaya/Risiko<br><small>Bobot 25% (Cost, 1=Rendah)</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="saw-name" value="Ide A: Pisang Epe Modern" /></td>
+                <td><input type="number" class="saw-val" data-row="0" data-col="0" value="5" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="0" data-col="1" value="4" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="0" data-col="2" value="2" min="1" max="5" /></td>
+              </tr>
+              <tr>
+                <td><input type="text" class="saw-name" value="Ide B: Desain Kemasan UMKM" /></td>
+                <td><input type="number" class="saw-val" data-row="1" data-col="0" value="4" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="1" data-col="1" value="5" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="1" data-col="2" value="1" min="1" max="5" /></td>
+              </tr>
+              <tr>
+                <td><input type="text" class="saw-name" value="Ide C: Totebag Tenun Sengkang" /></td>
+                <td><input type="number" class="saw-val" data-row="2" data-col="0" value="4" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="2" data-col="1" value="3" min="1" max="5" /></td>
+                <td><input type="number" class="saw-val" data-row="2" data-col="2" value="3" min="1" max="5" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button id="calcSawBtn" class="btn-primary full-width">Hitung Peringkat SAW</button>
+        <div id="sawOutput" class="calc-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: RANGKUMAN SIAP SALIN -->
+  <div id="summaryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="summaryModalTitle">📋 Rangkuman Sesi Siap Salin</h3>
+        <button class="modal-close" data-close="summaryModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Salin rangkuman hasil belajar sesi ini ke Lembar Kerja, Google Docs, atau Canva. Periksa kembali kebenaran isi sebelum dikumpulkan ke guru.</p>
+        <textarea id="summaryTextarea" class="summary-box" readonly rows="13"></textarea>
+        <div class="modal-actions">
+          <button id="copySummaryBtn" class="btn-primary">📋 Salin Teks</button>
+          <button id="downloadSummaryBtn" class="btn-outline">⬇️ Unduh (.txt)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: DAFTAR 13 MODUL RPP KIK -->
+  <div id="rppModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rppModalTitle">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="rppModalTitle">📚 Basis Pengetahuan: 13 Modul RPP KIK Fase F</h3>
+        <button class="modal-close" data-close="rppModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Klik salah satu modul RPP SMKN 2 Makassar di bawah ini agar KIKI langsung memandumu mempelajarinya:</p>
+        <div id="rppGrid" class="rpp-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: PENGATURAN MODE AI -->
+  <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="settingsModalTitle">⚙️ Pengaturan Mesin AI KIKI</h3>
+        <button class="modal-close" data-close="settingsModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Secara bawaan, KIKI berjalan dalam <strong>Mode Mandiri (100% Gratis, Tanpa Batas Kuota)</strong> menggunakan basis pengetahuan 13 RPP, 109 soal kuis, dan kalkulator presisi.
+          Guru/murid juga dapat mengaktifkan <strong>Mode Gemini API (Opsional)</strong> untuk diskusi bebas tambahan.
+        </p>
+        <div class="form-group">
+          <label class="checkbox-row">
+            <input id="toggleGeminiInput" type="checkbox" />
+            <span>Aktifkan Mode Generatif Gemini API (Opsional)</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="geminiKeyInput">Gemini API Key (Disimpan lokal di browser Anda saja)</label>
+          <input id="geminiKeyInput" type="password" placeholder="AIzaSy..." autocomplete="off" />
+        </div>
+        <button id="saveSettingsBtn" class="btn-primary full-width">Simpan Pengaturan</button>
+        <div id="settingsStatus" class="settings-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="knowledge.js"></script>
+  <script src="quizzes.js"></script>
+  <script src="tools.js"></script>
+  <script src="agent.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
